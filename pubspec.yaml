@@ -6,7 +6,7 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: 3.0.3 # Dart SDK version
+  sdk: '>=3.0.0 <4.0.0' # Dart SDK version
   flutter: 3.10.3 # Flutter SDK version
 
 dependencies:
@@ -14,6 +14,10 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.2
+  dio: ^5.3.0
+  flutter_bloc: ^8.1.3
+  logger: ^1.4.0
+  bloc_concurrency: ^0.2.2
 
 dev_dependencies:
   flutter_test:
@@ -23,3 +27,17 @@ dev_dependencies:
 flutter:
 
   uses-material-design: true
+
+  assets:
+    - assets/magic_ball/
+
+  fonts:
+    - family: GillSans
+      fonts:
+        - asset: assets/fonts/gill_sans/Gill Sans.otf
+        - asset: assets/fonts/gill_sans/Gill Sans Medium.otf
+          weight: 500
+        - asset: assets/fonts/gill_sans/Gill Sans Bold.otf
+          weight: 700
+        - asset: assets/fonts/gill_sans/Gill Sans Italic.otf
+          style: italic
