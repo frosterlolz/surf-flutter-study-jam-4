@@ -12,7 +12,7 @@ class MagicBallApiClient implements IMagicBallApiClient {
   @override
   Future<MagicAnswerModel> askMagicBall() async {
     try {
-      final response = await _client.get<Map<String, dynamic>>('/api');
+      final response = await _client.get<Map<String, dynamic>>('/');
       final data = response.data;
       if (data == null) {
         throw const MagicException(

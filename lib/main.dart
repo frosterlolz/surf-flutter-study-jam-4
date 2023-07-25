@@ -1,12 +1,21 @@
 import 'dart:async';
 
+import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:surf_practice_magic_ball/src/bloc/bloc_observer.dart';
+import 'package:surf_practice_magic_ball/src/domain/api_client/magic_ball_api_client.dart';
+import 'package:surf_practice_magic_ball/src/domain/repositories/magic_repository.dart';
+import 'package:surf_practice_magic_ball/src/features/magic_ball/bloc/magic_ball_bloc.dart';
 import 'package:surf_practice_magic_ball/src/features/magic_ball/view/magic_ball_screen.dart';
 import 'package:surf_practice_magic_ball/src/utils/error_handlers/default_error_handler.dart';
 
 void main() async {
   runZonedGuarded(() {
     WidgetsFlutterBinding.ensureInitialized();
+    Bloc.observer = AppBlocObserver.instance();
+    Bloc.transformer = sequential<Object?>();
 
     runApp(const MyApp());
   }, (error, stack) {
@@ -27,12 +36,28 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+    /// Advanced DIContainer :D
+    final errorHandler = DefaultErrorHandler();
+    final client = Dio()..options.baseUrl = 'https://eightballapi.com/api';
+    final magicBallApiClient = MagicBallApiClient(
+      client: client,
+    );
+    final magicBallRepository = MagicRepository(
+      magicBallApiClient: magicBallApiClient,
+    );
+
+    return BlocProvider(
+      create: (context) => MagicBallBloc(
+        errorHandler: errorHandler,
+        magicBallRepository: magicBallRepository,
       ),
-      home: const MagicBallScreen(),
+      child: MaterialApp(
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        home: const MagicBallScreen(),
+      ),
     );
   }
 }
